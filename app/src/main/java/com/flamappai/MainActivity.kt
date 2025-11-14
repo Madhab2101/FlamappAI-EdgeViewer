@@ -1,6 +1,7 @@
 package com.flamappai
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Size
@@ -12,14 +13,13 @@ import androidx.core.app.ActivityCompat
 import com.flamappai.camera.CameraController
 import com.flamappai.gl.GLTextureView
 import com.flamappai.nativebridge.NativeProcessor
-import com.flamappai.R
 import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 
-    public lateinit var glView: GLTextureView
-    public lateinit var btnMode: Button
-    public lateinit var txtFps: TextView
+    private lateinit var glView: GLTextureView
+    private lateinit var btnMode: Button
+    private lateinit var txtFps: TextView
 
     private lateinit var cameraController: CameraController
     private var mode = 2
@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateFps(procMs: Long) {
         val now = System.currentTimeMillis()
         if (lastFrameTime != 0L) {

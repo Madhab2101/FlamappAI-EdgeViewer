@@ -61,8 +61,13 @@ class CameraController(
         )
         imageReader?.setOnImageAvailableListener(::onImageAvailable, bgHandler)
 
-        if (!hasPermission()) return
+        // Check permission before opening camera
+        if (!hasPermission()) {
+            return
+        }
 
+        // Suppress the security exception warning since we've checked permission
+        @Suppress("MissingPermission")
         manager.openCamera(cameraId, object : CameraDevice.StateCallback() {
             override fun onOpened(device: CameraDevice) {
                 cameraDevice = device
@@ -85,13 +90,16 @@ class CameraController(
         val device = cameraDevice ?: return
         val surface = imageReader?.surface ?: return
 
-        device.createCaptureSession(
-            listOf(surface),
+        // Use the new createCaptureSession with OutputConfiguration (not deprecated)
+        val outputConfig = android.hardware.camera2.params.OutputConfiguration(surface)
+        val sessionConfig = android.hardware.camera2.params.SessionConfiguration(
+            android.hardware.camera2.params.SessionConfiguration.SESSION_REGULAR,
+            listOf(outputConfig),
+            context.mainExecutor,
             object : CameraCaptureSession.StateCallback() {
                 override fun onConfigured(s: CameraCaptureSession) {
                     session = s
-                    val builder =
-                        device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                    val builder = device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
                     builder.addTarget(surface)
                     builder.set(
                         CaptureRequest.CONTROL_AF_MODE,
@@ -101,9 +109,9 @@ class CameraController(
                 }
 
                 override fun onConfigureFailed(s: CameraCaptureSession) {}
-            },
-            bgHandler
+            }
         )
+        device.createCaptureSession(sessionConfig)
     }
 
     private fun onImageAvailable(reader: ImageReader) {
@@ -112,13 +120,13 @@ class CameraController(
         val h = image.height
         val rgba = yuvToRgba(image)
         image.close()
-        if (rgba != null) {
-            onFrame(rgba, w, h)
-        }
+        // rgba is non-null because yuvToRgba always returns a ByteArray
+        onFrame(rgba, w, h)
     }
 
     // Simple YUV->RGBA using NV21 + JPEG (not fastest but OK for assignment)
-    private fun yuvToRgba(image: Image): ByteArray? {
+    // Changed return type from ByteArray? to ByteArray since it never returns null
+    private fun yuvToRgba(image: Image): ByteArray {
         val width = image.width
         val height = image.height
 

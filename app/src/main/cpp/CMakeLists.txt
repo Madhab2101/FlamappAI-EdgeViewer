@@ -5,13 +5,23 @@ project("flamappai")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# ===== Get project root =====
+get_filename_component(PROJECT_ROOT "${CMAKE_SOURCE_DIR}/../../../../" ABSOLUTE)
+message(STATUS "Project Root: ${PROJECT_ROOT}")
+
+# ===== JNI directory =====
+set(JNI_DIR "${PROJECT_ROOT}/jni")
+message(STATUS "JNI Directory: ${JNI_DIR}")
+
 # ===== OpenCV Android SDK path =====
-# TODO: Update this path to match your OpenCV installation
-set(OPENCV_ANDROID_SDK_ROOT "D:/Android/OpenCV/opencv-4.12.0-android-sdk")
+set(OPENCV_ANDROID_SDK_ROOT "D:/Android/OpenCV/OpenCV-android-sdk")
 set(OPENCV_NATIVE_DIR "${OPENCV_ANDROID_SDK_ROOT}/sdk/native")
 
 # Include OpenCV headers
 include_directories("${OPENCV_NATIVE_DIR}/jni/include")
+
+# Include jni directory headers
+include_directories("${JNI_DIR}")
 
 # Import OpenCV shared library
 add_library(opencv_java4 SHARED IMPORTED)
@@ -25,7 +35,8 @@ set_target_properties(
 add_library(
         flam_native
         SHARED
-        native-lib.cpp
+        ${JNI_DIR}/native_processor.cpp
+        ${JNI_DIR}/opencv_processor.cpp
 )
 
 # Find Android log library
