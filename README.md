@@ -16,9 +16,9 @@ This project demonstrates real-time camera frame acquisition, native processing 
 * Native processing via **JNI + C++**
 * OpenCV filters:
 
-  * Raw (no processing)
-  * Grayscale
-  * Canny Edge Detection
+    * Raw (no processing)
+    * Grayscale
+    * Canny Edge Detection
 * Rendered using **OpenGL ES 2.0**
 * FPS + processing time displayed live
 * Clean Kotlin structure (CameraController, NativeBridge, GLTextureView)
@@ -234,8 +234,8 @@ Shows frame + stats
 
 
 ```
-/docs/android_demo.gif
-/docs/web_demo.png
+android_demo.gif
+web_demo.png
 ```
 
 ---
