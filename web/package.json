@@ -4,7 +4,7 @@
   "description": "Web viewer for FlamappAI EdgeViewer",
   "scripts": {
     "build": "tsc",
-    "start": "http-server public -p 8080",
+    "start": "http-server public -p 3000",
     "dev": "npm run build && npm start"
   },
   "devDependencies": {
