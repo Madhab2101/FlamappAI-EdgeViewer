@@ -1,0 +1,266 @@
+# FlamappAI EdgeViewer
+
+A real-time edge-processing pipeline built using:
+
+* **Android (Camera2 + JNI + C++ + OpenCV + OpenGL ES 2.0)**
+* **TypeScript Web Viewer**
+
+This project demonstrates real-time camera frame acquisition, native processing using OpenCV, GPU rendering, and a simple web-based validation tool.
+
+---
+
+## 📱 Android App – Features
+
+* Real-time camera stream using **Camera2**
+* YUV → RGBA conversion in Kotlin
+* Native processing via **JNI + C++**
+* OpenCV filters:
+
+  * Raw (no processing)
+  * Grayscale
+  * Canny Edge Detection
+* Rendered using **OpenGL ES 2.0**
+* FPS + processing time displayed live
+* Clean Kotlin structure (CameraController, NativeBridge, GLTextureView)
+
+---
+
+## 🌐 Web Viewer – Features
+
+Located under `/web/`:
+
+* Displays a processed sample frame (PNG or Base64)
+* Shows resolution + FPS
+* TypeScript compiled to `/public/dist/index.js`
+* Very small, lightweight demo viewer
+
+Run with:
+
+```bash
+cd web
+npm install
+npm run build
+npm start
+```
+
+Then open:
+
+```
+http://localhost:8080/
+```
+
+---
+
+## 📂 Project Structure
+
+```
+FlamappAI-EdgeViewer/
+│
+├─ app/
+│  ├─ src/main/java/com/flamappai/
+│  │  ├─ MainActivity.kt
+│  │  ├─ camera/CameraController.kt
+│  │  ├─ gl/GLTextureView.kt
+│  │  └─ nativebridge/NativeProcessor.kt
+│  ├─ src/main/res/layout/activity_main.xml
+│  ├─ src/main/AndroidManifest.xml
+│  ├─ CMakeLists.txt
+│  └─ build.gradle.kts
+│
+├─ jni/
+│  ├─ native_processor.cpp
+│  ├─ opencv_processor.cpp
+│  └─ jni_utils.hpp
+│
+├─ gl/
+│  ├─ shaders/textured_quad.vert
+│  └─ shaders/textured_quad.frag
+│
+├─ web/
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  ├─ src/index.ts
+│  ├─ public/index.html
+│  └─ public/style.css
+│
+└─ README.md
+```
+
+---
+
+## 🛠 Setup Instructions
+
+### **Android Setup**
+
+#### 1. Install NDK + CMake
+
+Android Studio → **SDK Manager → SDK Tools**:
+
+* NDK (25.2+ recommended)
+* CMake (3.22+)
+* Android SDK Build-Tools
+
+#### 2. Install OpenCV for Android
+
+Download from:
+[https://opencv.org/releases/](https://opencv.org/releases/)
+
+Unzip to a path like:
+
+```
+D:/Android/OpenCV/opencv-4.12.0-android-sdk/
+```
+
+#### 3. Configure CMakeLists
+
+Ensure:
+
+```
+set(OPENCV_ANDROID_SDK_ROOT "D:/Android/OpenCV/opencv-4.12.0-android-sdk")
+```
+
+Matches your install path.
+
+#### 4. Build
+
+Android Studio → **Build → Make Project**
+
+---
+
+### **Running the Android App**
+
+Steps:
+
+1. Connect a device (USB Debugging ON)
+2. Open project in Android Studio
+3. Click **Run ▶**
+4. Grant camera permission
+5. Processed camera view appears (Raw / Gray / Edges modes)
+
+#### Troubleshooting
+
+**OpenCV .so not found:**
+
+* Check CMake path
+* Ensure ABI filters include `arm64-v8a`
+
+**Black screen:**
+
+* GLTextureView not receiving frames
+* Check CameraController callbacks
+
+**JNI UnsatisfiedLinkError:**
+
+* Ensure both libs load in order:
+
+  ```kotlin
+  System.loadLibrary("opencv_java4")
+  System.loadLibrary("flam_native")
+  ```
+
+---
+
+## 🌐 Running the Web Viewer
+
+```
+cd web
+npm install
+npm run build
+npm start
+```
+
+Then open:
+[http://localhost:8080](http://localhost:8080)
+
+The viewer displays:
+
+* Sample processed frame
+* FPS + resolution text
+
+---
+
+## 🧱 Architecture Overview
+
+### **1. Camera Layer (Kotlin / Camera2)**
+
+```
+Camera2 (YUV)
+    ↓
+YUV → RGBA (Kotlin)
+    ↓
+NativeProcessor.nativeProcessFrameRgba()
+```
+
+### **2. JNI Bridge (Kotlin ↔ C++)**
+
+* Passes RGBA bytes + dimensions
+* Calls native OpenCV pipeline
+* Receives processed buffer
+
+### **3. C++ Processing (OpenCV)**
+
+```
+RGBA → Mat
+ ↓
+Grayscale / Canny
+ ↓
+RGBA output
+```
+
+### **4. OpenGL Rendering (GLSurfaceView)**
+
+```
+Processed RGBA
+     ↓
+GPU Texture
+     ↓
+Fullscreen Quad
+```
+
+### **5. Web Viewer (TypeScript)**
+
+```
+PNG/Base64
+    ↓
+index.ts → DOM
+    ↓
+Shows frame + stats
+```
+
+---
+
+## 📸 Screenshots / GIFs
+
+
+
+```
+/docs/android_demo.gif
+/docs/web_demo.png
+```
+
+---
+
+## 📘 Recommended Commit History
+
+```
+chore: initialize Android project with NDK
+feat: add Camera2 controller
+feat: add JNI + OpenCV processing
+feat: add OpenGL renderer
+feat: add TypeScript web viewer
+docs: update README
+```
+
+Incremental, meaningful commits are required (no "final commit").
+
+---
+
+## 🚀 Future Improvements
+
+* GPU shader-based edge detection
+* Add cloud-sync for frames
+* Real-time WebSocket-based streaming
+* UI toggle for processing parameters
+
+---
+
