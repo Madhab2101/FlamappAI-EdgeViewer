@@ -17,9 +17,9 @@ import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var glView: GLTextureView
-    private lateinit var btnMode: Button
-    private lateinit var txtFps: TextView
+    public lateinit var glView: GLTextureView
+    public lateinit var btnMode: Button
+    public lateinit var txtFps: TextView
 
     private lateinit var cameraController: CameraController
     private var mode = 2
