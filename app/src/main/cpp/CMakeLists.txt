@@ -4,13 +4,13 @@ project("flamappai")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(ANDROID_STL "c++_shared")
 
 # ===== Get project root =====
-get_filename_component(PROJECT_ROOT "${CMAKE_SOURCE_DIR}/../../../../" ABSOLUTE)
-message(STATUS "Project Root: ${PROJECT_ROOT}")
-
-# ===== JNI directory =====
+get_filename_component(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../.." ABSOLUTE)
 set(JNI_DIR "${PROJECT_ROOT}/jni")
+
+message(STATUS "Project Root: ${PROJECT_ROOT}")
 message(STATUS "JNI Directory: ${JNI_DIR}")
 
 # ===== OpenCV Android SDK path =====
@@ -40,10 +40,7 @@ add_library(
 )
 
 # Find Android log library
-find_library(
-        log-lib
-        log
-)
+find_library(log-lib log)
 
 # Link everything together
 target_link_libraries(
