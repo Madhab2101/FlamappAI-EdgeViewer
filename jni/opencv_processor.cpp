@@ -1,3 +1,4 @@
+#include "opencv_processor.hpp"
 #include "jni_utils.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>

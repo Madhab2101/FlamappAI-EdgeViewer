@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <vector>
 #include "jni_utils.hpp"
-#include "opencv_processor.cpp" // simple for this assignment
+#include "opencv_processor.hpp"  // ← Changed from .cpp to .hpp
 
 using namespace flamappai;
 
