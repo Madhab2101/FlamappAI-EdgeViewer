@@ -1,9 +1,11 @@
 {
   "name": "flamappai-edgeviewer-web",
   "version": "1.0.0",
+  "description": "Web viewer for FlamappAI EdgeViewer",
   "scripts": {
     "build": "tsc",
-    "start": "npx http-server public"
+    "start": "http-server public -p 8080",
+    "dev": "npm run build && npm start"
   },
   "devDependencies": {
     "typescript": "^5.6.0",
